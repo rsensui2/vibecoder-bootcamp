@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/調査/Udemy/【AI駆動開発入門】Cursor × Bolt new × ClaudeでフルスタックWebアプリケーションを構築しよう/15-CursorでAI駆動開発をはじめよう.md",
+                "file": "docs/研修内容/ライト版/第一回/1-19_宿題説明.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "15-CursorでAI駆動開発をはじめよう"
+              "title": "1-19_宿題説明"
             }
           },
           {
@@ -27,16 +27,15 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/研修内容/ライト版/第一回/1-5_非エンジニアがVibe Coderになるメリット.md",
+                "file": "docs/研修内容/ライト版/第二回/2-2_AI駆動要件定義.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1-5_非エンジニアがVibe Coderになるメリット"
+              "title": "2-2_AI駆動要件定義"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -93,7 +92,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 426.5
   },
   "right": {
     "id": "87e969a3b748a951",
@@ -183,39 +182,46 @@
       "command-palette:コマンドパレットを開く": false
     }
   },
-  "active": "90fa629ec7147ac9",
+  "active": "34e3f32644dd4ddb",
   "lastOpenFiles": [
-    "docs/研修内容/ライト版/第一回/1-10_チャット型AIツール.md",
-    "docs/研修内容/ライト版/vibe-coder-theme-song.md",
-    "docs/研修内容/ライト版/第一回/1-8_AI技術の進歩への期待.md",
-    "docs/研修内容/ライト版/第一回/1-7_AIへの投資の重要性.md",
-    "docs/研修内容/ライト版/第一回/1-6_AIの成長を活用する考え方.md",
-    "Aqua_Voice_と_ド素人でもAI駆動開発でここまで出来るんですよ！___TEKION_Group.png",
-    "docs/研修内容/ライト版/第一回/1-5_非エンジニアがVibe Coderになるメリット.md",
+    "講義録画/BASIC様/第一回/【オフライン】バイブコーディング研修第1回-4回 - 2025_06_30 09_52 JST - Gemini によるメモ.docx",
+    "講義録画/BASIC様/第一回/【オフライン】バイブコーディング研修第1回-4回 - 2025_06_30 09_52 JST～Recording.mp4",
+    "講義録画/BASIC様/第一回",
+    "講義録画/BASIC様/名称未設定フォルダ",
+    "講義録画/BASIC様",
+    "講義録画/名称未設定フォルダ",
+    "講義録画",
+    "講義録が",
+    "名称未設定フォルダ",
     "docs/研修内容/ライト版/第一回/1-4_VibeCoderとは.md",
-    "docs/研修内容/ライト版/第一回/1-0_事前準備.md",
     "docs/研修内容/ライト版/第一回/1-1_自己紹介.md",
+    "docs/研修内容/ライト版/第一回/1-0_事前準備.md",
     "docs/研修内容/ライト版/第一回/1-11_AIツールカオスマップ.md",
-    "docs/研修内容/ライト版/第一回/1-12_Webアプリ開発全体工程フロー.md",
-    "docs/調査/Udemy/【AI駆動開発入門】Cursor × Bolt new × ClaudeでフルスタックWebアプリケーションを構築しよう/提案内容.md",
-    "docs/調査/Udemy/【AI駆動開発入門】Cursor × Bolt new × ClaudeでフルスタックWebアプリケーションを構築しよう/15-CursorでAI駆動開発をはじめよう.md",
-    "無題のファイル 2.canvas",
-    "docs/研修内容/ライト版/第一回/1-19_宿題説明.md",
-    "docs/研修内容/ライト版/第一回/1-18_AIに業務を任せる考え方.md",
-    "docs/研修内容/ライト版/第一回/1-17_v0実践デモ.md",
     "docs/研修内容/ライト版/第一回/1-16_v0とは.md",
-    "docs/研修内容/ライト版/第一回/1-15_フロントエンド・バックエンドとは.md",
-    "docs/研修内容/ライト版/第一回/1-14_Cursorとは.md",
-    "docs/研修内容/ライト版/第一回/1-13_AI駆動開発ツール紹介.md",
-    "宿題説明.md",
-    "AIに業務を任せる考え方.md",
-    "v0実践デモ.md",
-    "v0とは.md",
-    "フロントエンド・バックエンドとは.md",
-    "Cursorとは.md",
-    "docs/研修内容/ライト版/第一回",
-    "docs/研修内容/ライト版",
-    "docs/研修内容/theme.csv",
+    "docs/研修内容/ライト版/第一回/1-17_v0実践デモ.md",
+    "docs/研修内容/ライト版/第一回/1-19_宿題説明.md",
+    "docs/研修内容/ライト版/第三回/3-2.Supabaseの使い方.md",
+    "docs/研修内容/ライト版/第三回/3-3.認証について.md",
+    "docs/研修内容/ライト版/第三回/3-1.データベース基礎.md",
+    "docs/研修内容/ライト版/第三回/3-4.ClerkでのGoogle認証.md",
+    "docs/研修内容/ライト版/第二回/2-7.宿題説明.md",
+    "docs/研修内容/ライト版/第三回/3-1.データベース設計について.md",
+    "docs/研修内容/ライト版/第二回/2-2_AI駆動要件定義.md",
+    "docs/調査/Udemy/【AI駆動開発入門】Cursor × Bolt new × ClaudeでフルスタックWebアプリケーションを構築しよう/15-CursorでAI駆動開発をはじめよう.md",
+    "docs/研修内容/【要件定義型AI駆動開発の極意】.md",
+    "docs/研修内容/ライト版/第二回/2-5_技術スタック理解.md",
+    "docs/研修内容/ライト版/第二回/2-4_AI駆動開発実践.md",
+    "docs/研修内容/ライト版/第二回/2-3_Cursor開発環境構築.md",
+    "docs/研修内容/ライト版/第二回/2-7.宿題説明",
+    "docs/研修内容/ライト版/第二回/2-6_バージョン管理とドキュメント作成.md",
+    "docs/研修内容/ライト版/vibe-coder-theme-song.md",
+    "docs/研修内容/ライト版/第二回/2-7.データベース設計について.md",
+    "docs/研修内容/ライト版/第一回/1-10_チャット型AIツール.md",
+    "docs/研修内容/ライト版/第一回/1-9_本講義のゴール.md",
+    "docs/研修内容/ライト版/第一回/1-8_AI技術の進歩への期待.md",
+    "docs/研修内容/ライト版/第三回",
+    "Aqua_Voice_と_ド素人でもAI駆動開発でここまで出来るんですよ！___TEKION_Group.png",
+    "無題のファイル 2.canvas",
     "無題のファイル 1.canvas",
     "無題のファイル.canvas"
   ]

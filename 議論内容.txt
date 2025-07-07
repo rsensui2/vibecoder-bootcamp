@@ -1736,7 +1736,7 @@ gantt
     CI/CD + 本番デプロイ     :b3, 2025-09-10, 2w
     Final Review             :b4, 2025-09-24, 1d
 Tekion Group  /  Vibe Coder Bootcamp 事務局
-担当: 泉水 亮介（CSO）
+担当: 泉水 亮介（TEKION Group CEO）
 mail: rsensui@tekion.jp
 Slack: @ryosuke_sensui
 

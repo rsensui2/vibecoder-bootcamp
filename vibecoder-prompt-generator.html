@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCoder プロンプトジェネレーター</title>
+    <style>
+        /* CSS変数の定義 */
+        :root {
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --radius: 8px;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        /* 基本スタイル */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--bg-primary);
+            padding: 24px 0;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* セクション共通スタイル */
+        section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        /* ボタン共通スタイル */
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+
+        .primary-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .secondary-button {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .secondary-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* フォルダ選択セクション */
+        .folder-selection {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        #selectedPath {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 講義回設定セクション */
+        .lecture-settings {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .lecture-settings label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        #lectureNumber {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: var(--bg-primary);
+            cursor: pointer;
+        }
+
+        .auto-detect-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
+
+        /* ファイルリストセクション */
+        .file-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .file-tree {
+            margin-bottom: 16px;
+        }
+
+        .lecture-group {
+            margin-bottom: 16px;
+        }
+
+        .lecture-group h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .file-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .file-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* ベースプロンプトセクション */
+        #basePrompt {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        /* 生成ボタン */
+        #generatePrompts {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 24px;
+        }
+
+        /* 生成されたプロンプトセクション */
+        .prompt-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .prompt-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 講義回表示 */
+        .lecture-indicator {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .chapter-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .chapter-number {
+            background-color: var(--bg-secondary);
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .chapter-title {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .copy-button {
+            background-color: var(--success-color);
+            color: white;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .copy-button:hover {
+            background-color: #059669;
+        }
+
+        .copy-button.copied {
+            background-color: var(--text-secondary);
+        }
+
+        .prompt-preview {
+            background-color: var(--bg-primary);
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-content.expanded {
+            max-height: none;
+        }
+
+        .toggle-full {
+            margin-top: 8px;
+            font-size: 12px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .toggle-full:hover {
+            text-decoration: underline;
+        }
+
+        .prompt-full {
+            margin-top: 12px;
+        }
+
+        .prompt-full pre {
+            background-color: var(--bg-primary);
+            padding: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ローディング状態 */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            section {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .folder-selection {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .prompt-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .lecture-settings {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>VibeCoder プロンプトジェネレーター</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- フォルダ選択セクション -->
+        <section class="folder-selection">
+            <button id="selectFolder" class="primary-button">
+                📁 フォルダを選択
+            </button>
+            <span id="selectedPath">フォルダが選択されていません</span>
+        </section>
+
+        <!-- ファイルリストセクション -->
+        <section class="file-list" id="fileListSection" style="display: none;">
+            <h2>ファイル一覧</h2>
+            <div class="file-tree" id="fileTree">
+                <!-- 動的に生成される -->
+            </div>
+            <div class="button-group">
+                <button id="selectAll" class="secondary-button">全選択</button>
+                <button id="deselectAll" class="secondary-button">全解除</button>
+            </div>
+        </section>
+
+        <!-- ベースプロンプト編集セクション -->
+        <section class="base-prompt">
+            <h2>ベースプロンプト</h2>
+            <div class="lecture-settings">
+                <label for="lectureNumber">講義回:</label>
+                <select id="lectureNumber">
+                    <option value="auto">自動検出</option>
+                    <option value="1">第1回</option>
+                    <option value="2" selected>第2回</option>
+                    <option value="3">第3回</option>
+                    <option value="4">第4回</option>
+                    <option value="5">第5回</option>
+                </select>
+                <span class="auto-detect-info">※自動検出はフォルダ名から判断します</span>
+            </div>
+            <textarea id="basePrompt" placeholder="ベースプロンプトを入力してください..."></textarea>
+            <div style="margin-top: 8px;">
+                <button id="resetPrompt" class="secondary-button">デフォルトに戻す</button>
+            </div>
+        </section>
+
+        <!-- 生成ボタン -->
+        <button id="generatePrompts" class="primary-button" style="display: none;">
+            ✨ プロンプトを生成
+        </button>
+
+        <!-- 生成されたプロンプトセクション -->
+        <section class="generated-prompts" id="generatedPromptsSection" style="display: none;">
+            <h2>生成されたプロンプト</h2>
+            <div id="promptsContainer">
+                <!-- 動的に生成される -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // デフォルトのベースプロンプト
+        const defaultBasePrompt = `以下の内容は、Vibe Coder Bootcamp ライト版・第２回講義の一部分です。
+この特定の章のみのプレゼンテーションスライドを作成してください。
+
+【重要】これは第２回講義全体の中の1つの章であり、この章だけのスライドを作成します。
+
+【章情報】
+- 章番号：[CHAPTER_NUMBER]
+- 章タイトル：[CHAPTER_TITLE]
+
+【技術仕様】
+- スライドサイズ：16:9アスペクト比（1280×720px）
+- 縦幅720pxに収まるよう最適化
+- この章のみで完結するスライドセット
+
+【基本情報】
+- 講座名：Vibe Coder Bootcamp ライト版
+- 講義回：第２回（全5回中）
+- 対象：プログラミング未経験の非エンジニア
+- この章の位置：第２回講義の中の上記セクション
+
+【スライド作成の重要方針】
+1. 1スライド1メッセージの原則を厳守
+2. この章の内容は端折らず、すべての重要情報を含める
+3. 情報の種類に応じて最適な表現方法を選択：
+   - 概念説明→俯瞰図やマインドマップ
+   - 比較内容→対比表や並列配置
+   - 手順説明→番号付きステップ
+   - 重要ポイント→独立スライドで強調
+4. 非エンジニアが直感的に理解できる表現を優先
+5.明らかなハルシネーションを避け、できる限りMarkdownに準拠すること。
+
+【コンテンツ別の表現指針】
+- マインドセット/概念説明：
+  * 抽象概念は具体的な比喩やイメージで表現
+  * 「従来 vs AI時代」のような対比を明確に
+  * 変化のインパクトをビジュアルで示す
+  
+- ツール紹介：
+  * 主要機能は箇条書きではなく視覚的に配置
+  * 使用例や画面イメージを含める
+  * 料金や比較情報は表形式で整理
+  
+- 実践/デモ内容：
+  * ステップバイステップで段階的に展開
+  * 各ステップの入力と出力を明示
+  * つまずきポイントと解決策を併記
+  
+- リスト/箇条書き項目：
+  * 3-5項目ごとにスライドを分割
+  * 関連項目はグルーピング
+  * 優先順位や重要度を視覚的に表現
+
+【この章のスライド構成】
+基本的な構成はMarkdownに極力準拠すること。
+1スライド1メッセージを中心としながら最も伝わりやすい形を判断して使用すること
+
+【この章の内容】
+[ここに特定の章のMarkdownを挿入]
+
+【追加の留意点】
+- 専門用語は初出時に簡潔な説明を添える
+- 長い文章は要点を抽出して視覚化
+- コード例は構文ハイライト付きで見やすく配置
+- 「なぜ重要か」「どう役立つか」を明確に示す
+- 聴衆の興味を維持する問いかけや考察ポイントを適宜配置
+- この章の前後関係は簡潔に触れる程度に留める
+
+各スライドには適切なタイトルを付け、この章の内容のみで講師が説明しやすい流れを作成してください。`;
+
+        // グローバル変数
+        let selectedFiles = [];
+        let fileContents = new Map();
+        let currentLectureNumber = '2'; // デフォルトは第2回
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            // ベースプロンプトの初期設定
+            const savedPrompt = localStorage.getItem('basePrompt');
+            document.getElementById('basePrompt').value = savedPrompt || defaultBasePrompt;
+
+            // イベントリスナーの設定
+            document.getElementById('selectFolder').addEventListener('click', selectFolder);
+            document.getElementById('selectAll').addEventListener('click', selectAllFiles);
+            document.getElementById('deselectAll').addEventListener('click', deselectAllFiles);
+            document.getElementById('resetPrompt').addEventListener('click', resetPrompt);
+            document.getElementById('generatePrompts').addEventListener('click', generatePrompts);
+            document.getElementById('lectureNumber').addEventListener('change', handleLectureNumberChange);
+
+            // ベースプロンプトの自動保存
+            document.getElementById('basePrompt').addEventListener('input', (e) => {
+                localStorage.setItem('basePrompt', e.target.value);
+            });
+
+            // 講義回設定の読み込み
+            const savedLectureNumber = localStorage.getItem('lectureNumber') || '2';
+            document.getElementById('lectureNumber').value = savedLectureNumber;
+            currentLectureNumber = savedLectureNumber;
+        });
+
+        // フォルダ選択機能
+        async function selectFolder() {
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                const files = await scanForMarkdownFiles(dirHandle);
+                
+                if (files.length === 0) {
+                    alert('選択したフォルダにMarkdownファイルが見つかりませんでした。');
+                    return;
+                }
+
+                selectedFiles = files;
+                document.getElementById('selectedPath').textContent = `${files.length}個のMarkdownファイルが見つかりました`;
+                displayFileList(files);
+                
+                // フォルダ名から講義回を自動検出
+                autoDetectLectureNumber(dirHandle.name, files);
+                
+                // セクションの表示
+                document.getElementById('fileListSection').style.display = 'block';
+                document.getElementById('generatePrompts').style.display = 'block';
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('フォルダ選択エラー:', err);
+                    alert('フォルダの選択中にエラーが発生しました。');
+                }
+            }
+        }
+
+        // Markdownファイルの再帰的スキャン
+        async function scanForMarkdownFiles(dirHandle, path = '') {
+            const files = [];
+            
+            for await (const entry of dirHandle.values()) {
+                if (entry.kind === 'file' && entry.name.endsWith('.md')) {
+                    // ファイル名パターンのチェック（例: 1-0_事前準備.md）
+                    if (/^\d+-\d+_/.test(entry.name)) {
+                        files.push({
+                            name: entry.name,
+                            path: path ? `${path}/${entry.name}` : entry.name,
+                            handle: entry,
+                            lecture: parseInt(entry.name.match(/^(\d+)-/)[1])
+                        });
+                    }
+                } else if (entry.kind === 'directory') {
+                    const subFiles = await scanForMarkdownFiles(
+                        entry, 
+                        path ? `${path}/${entry.name}` : entry.name
+                    );
+                    files.push(...subFiles);
+                }
+            }
+            
+            // ファイル名でソート
+            return files.sort((a, b) => {
+                const aMatch = a.name.match(/^(\d+)-(\d+)_/);
+                const bMatch = b.name.match(/^(\d+)-(\d+)_/);
+                if (aMatch && bMatch) {
+                    const aLecture = parseInt(aMatch[1]);
+                    const bLecture = parseInt(bMatch[1]);
+                    if (aLecture !== bLecture) return aLecture - bLecture;
+                    return parseInt(aMatch[2]) - parseInt(bMatch[2]);
+                }
+                return a.name.localeCompare(b.name);
+            });
+        }
+
+        // ファイルリストの表示
+        function displayFileList(files) {
+            const fileTree = document.getElementById('fileTree');
+            fileTree.innerHTML = '';
+
+            // 講義回ごとにグループ化
+            const grouped = files.reduce((acc, file) => {
+                const lecture = file.lecture || 0;
+                if (!acc[lecture]) acc[lecture] = [];
+                acc[lecture].push(file);
+                return acc;
+            }, {});
+
+            // グループごとに表示
+            Object.keys(grouped).sort((a, b) => a - b).forEach(lecture => {
+                const group = document.createElement('div');
+                group.className = 'lecture-group';
+                
+                const title = document.createElement('h3');
+                const lectureKanji = numberToKanji(lecture);
+                title.innerHTML = `第${lectureKanji}回<span class="lecture-indicator">講義回${lecture}</span>`;
+                group.appendChild(title);
+
+                grouped[lecture].forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `file-${file.name}`;
+                    checkbox.value = file.name;
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `file-${file.name}`;
+                    label.textContent = file.name;
+                    
+                    item.appendChild(checkbox);
+                    item.appendChild(label);
+                    group.appendChild(item);
+                });
+
+                fileTree.appendChild(group);
+            });
+        }
+
+        // 数字を漢数字に変換
+        function numberToKanji(num) {
+            const kanjiNumbers = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+            return kanjiNumbers[parseInt(num)] || num.toString();
+        }
+
+        // 全選択
+        function selectAllFiles() {
+            document.querySelectorAll('#fileTree input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+        }
+
+        // 全解除
+        function deselectAllFiles() {
+            document.querySelectorAll('#fileTree input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+        }
+
+        // ベースプロンプトをリセット
+        function resetPrompt() {
+            document.getElementById('basePrompt').value = defaultBasePrompt;
+            localStorage.setItem('basePrompt', defaultBasePrompt);
+        }
+
+        // プロンプト生成
+        async function generatePrompts() {
+            const checkedBoxes = document.querySelectorAll('#fileTree input[type="checkbox"]:checked');
+            if (checkedBoxes.length === 0) {
+                alert('ファイルを選択してください。');
+                return;
+            }
+
+            const generateButton = document.getElementById('generatePrompts');
+            generateButton.classList.add('loading');
+            generateButton.textContent = '生成中...';
+
+            try {
+                // 選択されたファイルの内容を読み込む
+                fileContents.clear();
+                const promises = [];
+
+                checkedBoxes.forEach(checkbox => {
+                    const fileName = checkbox.value;
+                    const file = selectedFiles.find(f => f.name === fileName);
+                    if (file) {
+                        promises.push(readFileContent(file));
+                    }
+                });
+
+                await Promise.all(promises);
+
+                // プロンプトを生成して表示
+                displayGeneratedPrompts();
+
+                // セクションを表示
+                document.getElementById('generatedPromptsSection').style.display = 'block';
+            } catch (error) {
+                console.error('プロンプト生成エラー:', error);
+                alert('プロンプトの生成中にエラーが発生しました。');
+            } finally {
+                generateButton.classList.remove('loading');
+                generateButton.textContent = '✨ プロンプトを生成';
+            }
+        }
+
+        // ファイル内容の読み込み
+        async function readFileContent(file) {
+            try {
+                const fileHandle = await file.handle.getFile();
+                const content = await fileHandle.text();
+                fileContents.set(file.name, content);
+            } catch (error) {
+                console.error(`ファイル読み込みエラー (${file.name}):`, error);
+                fileContents.set(file.name, `[エラー: ファイルを読み込めませんでした]`);
+            }
+        }
+
+        // 生成されたプロンプトの表示
+        function displayGeneratedPrompts() {
+            const container = document.getElementById('promptsContainer');
+            container.innerHTML = '';
+
+            const basePrompt = document.getElementById('basePrompt').value;
+
+            fileContents.forEach((content, fileName) => {
+                const prompt = generatePrompt(basePrompt, content, fileName);
+                const promptElement = createPromptElement(fileName, prompt);
+                container.appendChild(promptElement);
+            });
+        }
+
+        // 個別のプロンプト生成
+        function generatePrompt(basePrompt, markdownContent, fileName) {
+            // 講義回の決定
+            let lectureNumber;
+            const lectureNumberSetting = document.getElementById('lectureNumber').value;
+            
+            if (lectureNumberSetting === 'auto') {
+                // ファイル名から講義回を抽出
+                const lectureMatch = fileName.match(/^(\d+)-/);
+                lectureNumber = lectureMatch ? lectureMatch[1] : '2';
+            } else {
+                // 手動設定の値を使用
+                lectureNumber = lectureNumberSetting;
+            }
+            
+            // ベースプロンプト内の講義回数を動的に置換
+            let prompt = basePrompt;
+            
+            // 第２回講義、第2回講義、第二回講義など様々なパターンに対応
+            prompt = prompt.replace(/第[２2二]回講義/g, `第${numberToKanji(lectureNumber)}回講義`);
+            
+            // 第1回講義の中の -> 第X回講義の中の（これは上の置換でカバーされるが念のため残す）
+            prompt = prompt.replace(/第[１1一]回講義の中の/g, `第${numberToKanji(lectureNumber)}回講義の中の`);
+            
+            // 講義回：第２回（全5回中） -> 講義回：第X回（全5回中）
+            prompt = prompt.replace(/第[２2二]回（全5回中）/g, `第${numberToKanji(lectureNumber)}回（全5回中）`);
+            
+            // 講義回：第２回 -> 講義回：第X回（上記でカバーされない場合のため）
+            prompt = prompt.replace(/講義回：第[２2二]回/g, `講義回：第${numberToKanji(lectureNumber)}回`);
+            
+            // ファイル名からチャプター情報を抽出
+            const chapterMatch = fileName.match(/^\d+-(\d+)_(.+)\.md$/);
+            if (chapterMatch) {
+                const chapterNumber = chapterMatch[1];
+                const chapterTitle = chapterMatch[2];
+                
+                // チャプター情報を置換
+                prompt = prompt.replace('[CHAPTER_NUMBER]', chapterNumber);
+                prompt = prompt.replace('[CHAPTER_TITLE]', chapterTitle);
+            }
+            
+            // Markdown内容を挿入
+            prompt = prompt.replace(
+                '[ここに特定の章のMarkdownを挿入]',
+                markdownContent.trim()
+            );
+            
+            return prompt;
+        }
+
+        // 講義回設定の変更ハンドラ
+        function handleLectureNumberChange(e) {
+            currentLectureNumber = e.target.value;
+            localStorage.setItem('lectureNumber', currentLectureNumber);
+            
+            // 自動検出の場合の説明を更新
+            const autoDetectInfo = document.querySelector('.auto-detect-info');
+            if (currentLectureNumber === 'auto') {
+                autoDetectInfo.style.display = 'inline';
+            } else {
+                autoDetectInfo.style.display = 'none';
+            }
+        }
+
+        // フォルダ名から講義回を自動検出
+        function autoDetectLectureNumber(folderName, files) {
+            const lectureNumberSelect = document.getElementById('lectureNumber');
+            
+            // 自動検出モードでない場合はスキップ
+            if (lectureNumberSelect.value !== 'auto') {
+                return;
+            }
+            
+            // フォルダ名やパスから講義回を検出
+            const patterns = [
+                /第([１-９一-九1-9])回/,
+                /(第[１-９一-九1-9]回)/,
+                /第([1-9])\s*回/,
+                /\b([1-9])\s*回\b/
+            ];
+            
+            let detectedNumber = null;
+            
+            // まずファイルパスから検出を試みる
+            if (files.length > 0 && files[0].path) {
+                for (const file of files) {
+                    for (const pattern of patterns) {
+                        const match = file.path.match(pattern);
+                        if (match) {
+                            const numberStr = match[1];
+                            detectedNumber = kanjiToNumber(numberStr);
+                            if (detectedNumber) break;
+                        }
+                    }
+                    if (detectedNumber) break;
+                }
+            }
+            
+            // フォルダ名からも検出を試みる
+            if (!detectedNumber) {
+                for (const pattern of patterns) {
+                    const match = folderName.match(pattern);
+                    if (match) {
+                        const numberStr = match[1];
+                        detectedNumber = kanjiToNumber(numberStr);
+                        if (detectedNumber) break;
+                    }
+                }
+            }
+            
+            if (detectedNumber && detectedNumber >= 1 && detectedNumber <= 5) {
+                // 自動検出成功のフィードバック
+                const autoDetectInfo = document.querySelector('.auto-detect-info');
+                autoDetectInfo.textContent = `※自動検出: 第${numberToKanji(detectedNumber)}回として処理します`;
+                autoDetectInfo.style.color = 'var(--success-color)';
+            }
+        }
+
+        // 漢数字を数字に変換
+        function kanjiToNumber(str) {
+            const kanjiMap = {
+                '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+                '六': 6, '七': 7, '八': 8, '九': 9,
+                '１': 1, '２': 2, '３': 3, '４': 4, '５': 5,
+                '６': 6, '７': 7, '８': 8, '９': 9
+            };
+            
+            if (kanjiMap[str]) {
+                return kanjiMap[str];
+            } else if (/^[1-9]$/.test(str)) {
+                return parseInt(str);
+            }
+            return null;
+        }
+
+        // プロンプト要素の作成
+        function createPromptElement(fileName, prompt) {
+            const item = document.createElement('div');
+            item.className = 'prompt-item';
+
+            // ヘッダー
+            const header = document.createElement('div');
+            header.className = 'prompt-header';
+
+            const titleContainer = document.createElement('div');
+            
+            // チャプター情報の表示
+            const chapterMatch = fileName.match(/^(\d+)-(\d+)_(.+)\.md$/);
+            if (chapterMatch) {
+                const lectureNumber = chapterMatch[1];
+                const chapterNumber = chapterMatch[2];
+                const chapterTitle = chapterMatch[3];
+                
+                const chapterInfo = document.createElement('div');
+                chapterInfo.className = 'chapter-info';
+                
+                const chapterNum = document.createElement('span');
+                chapterNum.className = 'chapter-number';
+                chapterNum.textContent = `${lectureNumber}-${chapterNumber}`;
+                
+                const chapterTitleSpan = document.createElement('span');
+                chapterTitleSpan.className = 'chapter-title';
+                chapterTitleSpan.textContent = chapterTitle;
+                
+                chapterInfo.appendChild(chapterNum);
+                chapterInfo.appendChild(chapterTitleSpan);
+                titleContainer.appendChild(chapterInfo);
+            }
+            
+            const title = document.createElement('h3');
+            title.textContent = fileName;
+            titleContainer.appendChild(title);
+
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.textContent = '📋 コピー';
+            copyButton.onclick = () => copyToClipboard(prompt, copyButton);
+
+            header.appendChild(titleContainer);
+            header.appendChild(copyButton);
+
+            // プレビュー
+            const preview = document.createElement('div');
+            preview.className = 'prompt-preview';
+
+            const previewContent = document.createElement('div');
+            previewContent.className = 'preview-content';
+            previewContent.textContent = prompt.substring(0, 300) + (prompt.length > 300 ? '...' : '');
+
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'toggle-full';
+            toggleButton.textContent = '全文を表示';
+            toggleButton.onclick = () => toggleFullContent(previewContent, prompt, toggleButton);
+
+            preview.appendChild(previewContent);
+            preview.appendChild(toggleButton);
+
+            item.appendChild(header);
+            item.appendChild(preview);
+
+            return item;
+        }
+
+        // クリップボードにコピー
+        async function copyToClipboard(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // 成功フィードバック
+                const originalText = button.textContent;
+                button.textContent = '✅ コピー完了';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (error) {
+                console.error('コピーエラー:', error);
+                alert('クリップボードへのコピーに失敗しました。');
+            }
+        }
+
+        // 全文表示の切り替え
+        function toggleFullContent(contentElement, fullText, button) {
+            if (contentElement.classList.contains('expanded')) {
+                contentElement.classList.remove('expanded');
+                contentElement.textContent = fullText.substring(0, 300) + (fullText.length > 300 ? '...' : '');
+                button.textContent = '全文を表示';
+            } else {
+                contentElement.classList.add('expanded');
+                contentElement.textContent = fullText;
+                button.textContent = '折りたたむ';
+            }
+        }
+
+        // File System Access APIのサポートチェック
+        if (!window.showDirectoryPicker) {
+            alert('このブラウザはFile System Access APIをサポートしていません。Chrome、Edge、またはOperaの最新版をご使用ください。');
+        }
+    </script>
+</body>
+</html>
