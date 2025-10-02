@@ -116,42 +116,47 @@ AIエージェントとの協働を前提とした、実践的なカリキュラ
 
 ---
 
-## 📅 Session 3: Backend Implementation with AI
+## 📅 Session 3: Database & Authentication Fundamentals
 **日程:** 第3週 / **時間:** 3時間
 
 ### 🎯 Learning Objectives
-- データベースと認証の基礎理解
-- AIを活用したSupabase/Clerk実装
-- AI駆動でのCRUD機能構築
+- データベース設計の基礎理解とSupabase実装
+- 認証・認可システムの理解とClerk実装
+- AI駆動でのバックエンド機能構築と実装ロードマップ
 
 ### 📚 Detailed Curriculum
 
-#### 3-1_database-and-supabase.md (60分)
-- **🎯 Goal:** DB設計とSupabase実装をAIで自動化
+#### 3-1_database-fundamentals-and-supabase.md (75分)
+- **🎯 Goal:** データベース基礎とSupabase環境構築をマスター
 - **📚 Topics:**
-  - データベースの基本概念
-  - 要件定義書からのER図自動生成
-  - SupabaseテーブルのAI構築
-  - RLS（Row Level Security）設定
-  - **AI活用:** スキーマ生成プロンプト
-- **🔄 Updated:** AI駆動のDB設計フロー
+  - スプレッドシートからDBへの思考転換
+  - PostgreSQL vs NoSQL（簡潔な比較）
+  - Supabaseプロジェクト作成と初期設定
+  - **2025年最新:** 新API キー形式（sb_publishable/sb_secret）
+  - 環境変数の安全な管理方法
+  - **AI活用:** 要件定義からER図自動生成
+- **🔄 Updated:** 重複削除で547行削減、最新API情報追加
 
-#### 3-2_auth-and-clerk.md (60分)
-- **🎯 Goal:** 認証システムをAIで迅速実装
+#### 3-2_authentication-and-clerk.md (75分)
+- **🎯 Goal:** 認証システムをClerkで完全実装
 - **📚 Topics:**
-  - 認証・認可の基本理解
-  - Clerk導入（`clerk-integration-prompt.md`）
-  - Google/GitHub認証の設定
-  - Supabase連携（Webhook）
-  - **AI活用:** 認証フロー自動生成
-- **🔄 Updated:** Clerk公式AIプロンプト活用
+  - 認証・認可の基本概念
+  - なぜ認証を自作してはいけないのか
+  - Clerk導入とGoogle OAuth設定
+  - Supabase連携（JWT + RLS詳細実装）
+  - RLSポリシーの実装パターン
+  - **AI活用:** 認証エラー解決プロンプト
+- **🔄 Updated:** RLS実装詳細をこのセッションに集約
 
-#### 3-3_crud-and-homework.md (15分)
-- **🎯 Goal:** CRUD機能の完成と次回準備
+#### 3-3_implementation-roadmap-and-homework.md (30分)
+- **🎯 Goal:** 統合実装ロードマップと宿題設定
 - **📚 Topics:**
-  - Server Actions実装パターン
-  - useActionState/useOptimistic活用
-  - **宿題:** CRUD機能の完成
+  - 3-1と3-2の統合アーキテクチャ確認
+  - Phase別実装ガイド（環境→認証→DB→CRUD）
+  - AIプロンプト活用による段階的開発
+  - トラブルシューティングTop3
+  - **宿題:** 認証付きCRUDアプリ完成
+- **✨ New:** 統合実装チェックリスト提供
 
 ---
 
