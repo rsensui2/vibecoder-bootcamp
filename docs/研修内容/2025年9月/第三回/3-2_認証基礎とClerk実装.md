@@ -958,6 +958,8 @@ sequenceDiagram
 ### 従来の方法（2024年まで）
 ```typescript
 // JWT Templateを手動設定する必要があった
+
+// レガシーキーの場合（2026年後半廃止予定）
 const supabaseClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -1036,7 +1038,7 @@ export function useSupabaseClient() {
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       global: {
         fetch: async (url, options = {}) => {
@@ -1070,13 +1072,13 @@ export async function createServerSupabaseClient() {
   const { getToken } = auth()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
   const token = await getToken({ template: 'supabase' })
 
   const supabase = createClient(
     supabaseUrl,
-    supabaseAnonKey,
+    supabaseKey,
     {
       global: {
         headers: {

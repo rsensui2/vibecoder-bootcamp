@@ -116,11 +116,13 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 # Supabase Configuration
 # 取得方法: https://supabase.com/dashboard → プロジェクト → Settings → API
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxx...
+SUPABASE_SECRET_KEY=sb_secret_xxxxx...
 
-# Database Connection (ローカル開発用 - オプション)
-DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+# Database Connection（Prisma等で直接DB接続が必要な場合）
+# 取得方法: プロジェクトページ → Connect → Transaction Mode
+# ⚠️ 注意: パスワードに特殊文字（@, :, /, #等）が含まれる場合は必ずURLエンコードすること
+DATABASE_URL=postgresql://postgres.[project_ref]:[URLエンコード済みPASSWORD]@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
 ```
 
 **ユーザーへの指示を生成**
@@ -795,10 +797,16 @@ AIが実装を完了したら、以下の指示をユーザーに提示：
 
 3. **API Keys の取得**
    - サイドバーから「Settings」→「API」
-   - 以下をコピー：
+   - 以下の3つをコピー:
      - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
-     - `anon public` → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-     - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (⚠️ 秘密情報！)
+     - `Publishable Key (sb_publishable_...)` → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+     - `Secret Key (sb_secret_...)` → `SUPABASE_SECRET_KEY` (⚠️ 秘密情報！)
+
+   - **（オプション）Database接続が必要な場合**:
+     - プロジェクトページで「Connect」ボタンをクリック
+     - **Transaction Mode**（推奨、ポート6543）の接続文字列をコピー
+     - パスワードに記号（@, :, /, #等）が含まれる場合は**URLエンコード**が必要
+     - 例: `p@ss:word` → `p%40ss%3Aword`（JavaScriptの場合: `encodeURIComponent(password)`）
 
 4. **マイグレーションの実行**
    
@@ -839,8 +847,12 @@ AIが実装を完了したら、以下の指示をユーザーに提示：
    
    # Supabase (ステップ2で取得)
    NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOi...
-   SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxx...
+   SUPABASE_SECRET_KEY=sb_secret_xxxxx...
+
+   # Database接続（オプション：Prisma等で直接DB接続が必要な場合）
+   # ⚠️ パスワードに特殊文字が含まれる場合は必ずURLエンコードすること
+   DATABASE_URL=postgresql://postgres.[project_ref]:[URLエンコード済みPASSWORD]@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
    ```
 
 3. **`.env.local` が `.gitignore` に含まれていることを確認**
@@ -963,7 +975,7 @@ AIが実装を完了したら、以下の指示をユーザーに提示：
 ### セキュリティ
 
 1. **環境変数の管理**
-   - `SUPABASE_SERVICE_ROLE_KEY` は絶対に公開しない
+   - `SUPABASE_SECRET_KEY` (新APIキー) または `SUPABASE_SERVICE_ROLE_KEY` (レガシー) は絶対に公開しない
    - `.env.local` は Git にコミットしない
    - 本番環境では環境変数を適切に設定
 

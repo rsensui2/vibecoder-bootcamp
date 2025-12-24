@@ -1,0 +1,5 @@
+- Repository is mostly Japanese Markdown content; follow existing numbering scheme like `1-0-3_トピック名.md` to preserve session order.
+- Use standard Markdown headings (`#`, `##`, etc.) and insert horizontal rules (`---`) where documents expect clear separations (e.g., when concatenating sections).
+- Keep content bilingual only when already present; default to Japanese phrasing consistent with existing docs.
+- Scripts assume UTF-8 filenames; avoid renaming directories or adding non-ASCII symbols beyond what is already used in Japanese titles.
+- No explicit coding style is defined because there is minimal executable code; if scripting is required, stay with bash/Python conventions already in the repo.

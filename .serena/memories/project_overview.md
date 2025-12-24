@@ -1,0 +1,5 @@
+- **Purpose**: Repository for the TEKION Group "VibeCoder" bootcamp, a training program that teaches non-engineers AI-driven software development through lectures, exercises, and supporting business materials.
+- **Key contents**: Most assets are Markdown docs and slide outlines under `docs/` (研修内容, prompt, 調査, Knowledge), with supporting sales material in `営業資料/` and lecture recordings in `講義録画/`. Root also holds planning docs (`demoday_*`, `*.md`), prompt templates, and helper scripts (`combine_markdown*.sh`).
+- **Curriculum focus**: AI-assisted requirement definition, modern full-stack web dev, deployment workflows, and business enablement.
+- **Tech stack referenced**: Cursor/v0/Bolt.new for AI-driven development; implementation stack of Next.js + React + TypeScript + Tailwind CSS on the frontend, Node.js/Express/Prisma backend, Supabase (PostgreSQL), Clerk auth, Vercel deployment (per README).
+- **General layout**: Markdown filenames often use numeric prefixes (e.g., `1-0-3_...`) indicating session/order; scripts merge per-session docs into consolidated handouts.

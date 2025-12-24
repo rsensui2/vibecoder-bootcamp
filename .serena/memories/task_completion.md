@@ -1,0 +1,4 @@
+- Because the repo is documentation-first, finishing a task usually means updating Markdown; proofread content (spelling/links) and ensure numbering prefixes remain sequential.
+- If changes affect compiled handouts (e.g., 第一回資料), rerun `bash combine_markdown_v2.sh` to regenerate the consolidated file and verify sections render properly.
+- There are no automated tests or linters; manual verification consists of opening the updated Markdown in a viewer (Cursor/VS Code preview) and confirming images/links resolve.
+- If Python helper scripts are touched, run the relevant script locally (`python3 <script>.py`) to ensure it still executes without errors.

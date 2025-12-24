@@ -272,8 +272,9 @@
 
 1. **セキュリティ**
    - 環境変数を Git にコミットしない
-   - `SUPABASE_SERVICE_ROLE_KEY` は絶対に公開しない
+   - `SUPABASE_SECRET_KEY` (新APIキー) または `SUPABASE_SERVICE_ROLE_KEY` (レガシー) は絶対に公開しない
    - すべてのテーブルで RLS を有効化
+   - ⚠️ **2025年11月以降の新規プロジェクトは新しいAPIキー体系（sb_publishable_...、sb_secret_...）を使用**
 
 2. **パフォーマンス**
    - RLS ポリシーで使用するカラムにインデックスを作成

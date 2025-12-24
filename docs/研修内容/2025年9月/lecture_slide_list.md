@@ -6,7 +6,7 @@
 
 | ファイル名 | スライド |
 |:---|:---| 
-| 1-1_オリエンテーションとマインドセット変革.md | https://lfhimoeo.gensparkspace.com/ |
+| 1-1_オリエンテーションとマインドセット変革.md | https://rswhcvqq.gensparkspace.com/ |
 | 1-2_ビジネス活用事例とLLM基礎.md | https://fnqzpsin.gensparkspace.com/  |
 | 1-3_ビジネス要件定義の実践.md | https://lfhimoeo.gensparkspace.com/ |
 | 1-4_ツール紹介と宿題説明.md | https://tqxctevb.gensparkspace.com/ |
@@ -19,6 +19,22 @@
 | 2-2_技術スタックとAI要件定義演習.md | https://onkiysrs.gensparkspace.com/ |
 | 2-3_開発環境構築とエラー対処法.md | https://igdrlieh.gensparkspace.com/ |
 | 2-4_バージョン管理と宿題.md | https://yvrcigfn.gensparkspace.com/ |
+
+### 第三回：データベースと認証の実装
+
+| ファイル名 | スライド |
+|:---|:---|
+| 3-1_DB基礎とSupabase実装.md | https://keckplxb.gensparkspace.com/ |
+| 3-2_認証基礎とClerk実装.md | https://hasuhayx.gensparkspace.com/ |
+| 3-3_実装ロードマップと宿題.md | https://hrtjeucm.gensparkspace.com/ |
+
+### 第四回：ビルドとデプロイ
+
+| ファイル名 | スライド |
+|:---|:---|
+| 4-1_実装レビューとデプロイ準備.md | https://ijrmtlhc.gensparkspace.com/ |
+| 4-2_Vercelデプロイと本番運用.md | https://xniwlnii.gensparkspace.com/ |
+| 4-3_最新AI開発エコシステム.md | https://jacjvwwk.gensparkspace.com/ |
 
 ---
 

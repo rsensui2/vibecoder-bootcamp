@@ -1,0 +1,5 @@
+- `ls`, `rg <pattern>`: inspect directories and search through Markdown-heavy repo efficiently.
+- `sed -n '1,120p' <file.md>` or `bat <file.md>` (if available): preview specific doc sections without loading entire files.
+- `bash combine_markdown.sh` / `bash combine_markdown_v2.sh`: merge the per-section docs under `docs/研修内容/ライト版/第一回` into a single consolidated handout (v2 provides progress logging and counts sections).
+- `python3 scrape_quiz.py` or `python3 scrape_quiz_selenium.py`: helper scripts for gathering quiz content/results (requires local Python env; scripts reside in repo root).
+- `sh combine_markdown*.sh && open 第一回_統合版_*.md`: generate and preview compiled docs before distributing.

@@ -586,6 +586,397 @@ const formatted = format(tomorrow, 'yyyy年MM月dd日', { locale: ja })
 
 ---
 
+# APIキーとは何か？
+
+## 🔑 **APIを使うための「鍵」**
+
+### APIキーの役割
+APIはコンセントに例えましたが、**APIキーは「電気の契約」**のようなものです。
+
+```
+APIキーなし = 「無断で電気を使う」→ 使えない ❌
+APIキー あり = 「契約して電気を使う」→ 使える ✅
+```
+
+### なぜAPIキーが必要なのか
+
+1. **本人確認**
+   - 誰が使っているか特定
+   - 不正利用の防止
+
+2. **使用量の測定**
+   - どれだけAPIを呼び出したか記録
+   - 料金計算の基礎
+
+3. **セキュリティ**
+   - 悪意のある利用者をブロック
+   - アクセス制限
+
+---
+
+# APIキーの具体例
+
+## 📋 **実際のAPIキー**
+
+### Supabase（データベース）
+
+```bash
+# プロジェクトURL
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+
+# 公開用キー（ブラウザで使える）
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxx...
+
+# 秘密キー（サーバーのみ、複数作成可能）
+SUPABASE_SECRET_KEY=sb_secret_xxxxx...
+
+# データベース接続文字列（オプション：直接DB接続が必要な場合）
+DATABASE_URL=postgresql://postgres.xxxxx:[PASSWORD]@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
+```
+
+💡 **取得方法**:
+1. [Supabase Dashboard](https://supabase.com/dashboard) → Settings → API
+2. **Project URL** をコピー
+3. **Publishable Key** (`sb_publishable_...`) をコピー
+4. **Secret Key** (`sb_secret_...`) をコピー（⚠️ 絶対に公開しない）
+
+### Clerk（認証サービス）
+```bash
+# 公開用キー
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
+
+# 秘密キー
+CLERK_SECRET_KEY=sk_test_xxxxx
+```
+
+### Google Maps API
+```bash
+GOOGLE_MAPS_API_KEY=AIzaSyD...
+```
+
+⚠️ **セキュリティ警告**: Google Maps APIキーには必ず制限を設定してください
+- **アプリケーション制限**: HTTPリファラー制限（ウェブサイトの場合）
+- **API制限**: 使用するAPIのみ有効化（Maps JavaScript API等）
+- 未制限のキーは不正利用・高額課金のリスクあり
+
+---
+
+# 環境変数ファイルの完全理解
+
+## 🔐 **なぜ環境変数が必要なのか**
+
+APIキーやデータベースURLなど、**秘密情報**をコードに直接書くと：
+- ❌ GitHubに公開され、悪用される
+- ❌ 開発環境と本番環境で設定を変えられない
+- ❌ セキュリティリスクが高まる
+
+**解決策**: 環境変数ファイルで管理する
+
+---
+
+# .env ファイルの種類と使い分け
+
+## 📂 **3種類のファイルの違い**
+
+| ファイル名 | 用途 | Git管理 | 優先度 | 例 |
+|-----------|------|---------|--------|-----|
+| `.env` | 全環境共通のデフォルト値 | ✅ 含める | 低 | 開発用サンプルURL |
+| **`.env.local`** | **ローカル開発用（APIキー含む）** | ❌ **除外** | **高** | **実際のAPIキー** |
+| `.env.production` | 本番環境専用 | ❌ 除外 | 最高 | Vercelで設定 |
+| `.env.example` | テンプレート（値は空欄） | ✅ 含める | - | `DATABASE_URL=` |
+
+### Next.jsの読み込み優先順位
+```
+.env.local > .env.production > .env
+```
+
+---
+
+# NEXT_PUBLIC_ プレフィックスの重要性
+
+## 🔑 **クライアント vs サーバーサイド環境変数**
+
+```bash
+# ブラウザ（クライアント）で使える環境変数
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
+
+# サーバーサイドでのみ使える環境変数（秘密情報）
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...
+CLERK_SECRET_KEY=sk_test_xxx
+DATABASE_URL=postgresql://...
+```
+
+### ⚠️ 重要な原則
+
+**APIキーなど秘密情報には `NEXT_PUBLIC_` を絶対に付けない**
+
+```typescript
+// ❌ 危険：ブラウザに公開される
+NEXT_PUBLIC_STRIPE_SECRET_KEY=sk_live_xxx
+
+// ✅ 安全：サーバーサイドのみ
+STRIPE_SECRET_KEY=sk_live_xxx
+```
+
+---
+
+# セキュアな環境変数管理
+
+## 📝 **.env.example テンプレートの作成**
+
+**個人開発でも必須**のファイル：
+
+```bash
+# .env.example（GitHubに含める）
+# ========================================
+# Supabase
+# 取得方法: https://supabase.com/dashboard → Settings → API
+# ========================================
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+
+# Database接続（オプション：Prisma等で直接DB接続が必要な場合）
+# 取得方法: プロジェクトページ → Connect → Transaction Mode
+# 注意: パスワードに特殊文字が含まれる場合はURLエンコードすること
+DATABASE_URL=
+
+# ========================================
+# Clerk
+# 取得方法: https://dashboard.clerk.com → API Keys
+# ========================================
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+```
+
+**キーの名前だけ記載し、値は空欄にする**
+
+---
+
+# .gitignore の設定確認
+
+## 🚫 **必ずGitから除外するファイル**
+
+```bash
+# .gitignore
+.env*.local
+.env.production
+
+# 既存の.gitignoreに追加されているか確認
+```
+
+### 確認方法
+```bash
+# ターミナルで実行
+cat .gitignore | grep ".env"
+```
+
+### もし含まれていなければ追加
+```bash
+echo ".env*.local" >> .gitignore
+echo ".env.production" >> .gitignore
+```
+
+---
+
+# 環境変数のセットアップ手順
+
+## 🔧 **プロジェクト開始時の手順**
+
+### 1. .env.exampleをコピー
+```bash
+cp .env.example .env.local
+```
+
+### 2. 各サービスからAPIキーを取得
+
+**Supabase**:
+1. [supabase.com/dashboard](https://supabase.com/dashboard)
+2. プロジェクト選択
+3. **Settings → API**
+4. 以下をコピー：
+   - **Project URL**: `https://xxxxx.supabase.co`
+   - **Publishable Key**: `sb_publishable_...`（公開用）
+   - **Secret Key**: `sb_secret_...`（秘密、⚠️ 絶対に公開しない）
+
+5. **（オプション）Database接続が必要な場合**:
+   - プロジェクトページで「**Connect**」ボタンをクリック
+   - **Transaction Mode**（推奨、ポート6543）の接続文字列をコピー
+   - パスワードに記号（`@`, `:`, `/`, `#`等）が含まれる場合は**URLエンコード**が必要：
+     ```javascript
+     // JavaScriptの場合
+     const encodedPassword = encodeURIComponent(password)
+
+     // 例: p@ss:word → p%40ss%3Aword
+     ```
+
+**Clerk**:
+1. [dashboard.clerk.com](https://dashboard.clerk.com)
+2. Application選択
+3. API Keys
+4. キーをコピー
+
+### 3. .env.localにペースト
+```bash
+# .env.local
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxx...
+SUPABASE_SECRET_KEY=sb_secret_xxxxx...
+
+# Database接続（オプション：Prisma等で直接DB接続が必要な場合）
+# パスワードは必ずURLエンコードすること！
+DATABASE_URL=postgresql://postgres.xxxxx:[URLエンコード済みPASSWORD]@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
+
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
+CLERK_SECRET_KEY=sk_test_xxxxx
+```
+
+⚠️ **重要**: Database Passwordに特殊文字（`@`, `:`, `/`, `#`等）が含まれる場合は必ずURLエンコードしてください
+- 例: `p@ss:word` → `p%40ss%3Aword`
+- JavaScriptの場合: `encodeURIComponent(password)`
+
+### 4. セキュリティチェック
+```bash
+# .env.localがGitで無視されているか確認
+git status | grep .env.local
+# → 表示されなければOK（無視されている）
+
+# .gitignoreの内容確認
+cat .gitignore | grep ".env"
+# → .env*.local が含まれていればOK
+```
+
+---
+
+# API キー漏洩時の対処法
+
+## ⚠️ **もしAPIキーをGitHubに公開してしまったら**
+
+### 即座に実行する5つのステップ
+
+1. **キーを無効化**（各サービスのダッシュボード）
+   - Supabase: Settings → API → Reset anon/service_role key
+   - Clerk: API Keys → Revoke key
+
+2. **新しいキーを発行**
+
+3. **`.env.local`を更新**
+
+4. **Gitの履歴から削除**（必要に応じて）
+   ```bash
+   # 上級者向け - BFG Repo-Cleanerなどのツールを使用
+   ```
+
+5. **再発防止策**
+   - .gitignoreの再確認
+   - コミット前の確認習慣
+
+### 予防策
+- **事前に`.gitignore`を設定**
+- **コミット前に`git status`で確認する習慣**
+- **GitGuardianなど監視ツールの活用**
+
+---
+
+# Cursor Agentへの環境変数セットアップ指示
+
+## 💬 **プロジェクト初期化時のプロンプトテンプレート**
+
+```markdown
+Next.js 15プロジェクトの環境変数ファイルを作成してください。
+
+## セットアップ要件
+1. **環境変数ファイルの作成**
+   - `.env.local` を作成（以下の変数を含む）:
+     ```
+     # Supabase
+     NEXT_PUBLIC_SUPABASE_URL=
+     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+     SUPABASE_SECRET_KEY=
+
+     # Database接続（オプション：Prisma等で直接DB接続が必要な場合）
+     DATABASE_URL=
+
+     # Clerk
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+     CLERK_SECRET_KEY=
+     ```
+
+2. **`.env.example`テンプレートを作成**
+   - 上記と同じキーを含むが、値は空欄に
+   - 各キーの取得方法をコメントで記載
+
+3. **`.gitignore`の確認**
+   - 以下が含まれているか確認:
+     ```
+     .env*.local
+     .env.production
+     ```
+
+4. **README.mdに環境変数セットアップ手順を追加**
+   - Supabase APIキー取得方法:
+     - Settings → API → Project URL, Publishable Key, Secret Keyをコピー
+   - Database接続が必要な場合:
+     - プロジェクトページ → Connect → Transaction Mode の接続文字列をコピー
+     - パスワードに特殊文字（@, :, /, #等）が含まれる場合はURLエンコードすること
+   - Clerk APIキー取得方法:
+     - dashboard.clerk.com → API Keys
+
+## セキュリティチェック
+- 環境変数ファイルがGit管理されていないか確認
+- NEXT_PUBLIC_プレフィックスが適切に使用されているか確認
+- Secret Key（sb_secret_...）にはNEXT_PUBLIC_を付けないこと
+- Database Passwordは必ずURLエンコードすること
+
+上記を実行し、完了したら報告してください。
+```
+
+---
+
+# 環境変数のベストプラクティス
+
+## ✅ **安全に使うための5つのルール**
+
+### 1. 秘密情報には`NEXT_PUBLIC_`を付けない
+```bash
+# ✅ 正しい
+DATABASE_PASSWORD=secret123
+STRIPE_SECRET_KEY=sk_live_xxx
+
+# ❌ 危険
+NEXT_PUBLIC_DATABASE_PASSWORD=secret123
+NEXT_PUBLIC_STRIPE_SECRET_KEY=sk_live_xxx
+```
+
+### 2. .env.localは絶対にGitにコミットしない
+```bash
+# .gitignore に必ず含める
+.env*.local
+```
+
+### 3. .env.exampleを必ず作る
+```bash
+# 何が必要かを示すテンプレート
+DATABASE_URL=
+API_KEY=
+```
+
+### 4. 本番環境ではホスティングサービスで設定
+```bash
+# Vercelの場合
+Settings → Environment Variables
+```
+
+### 5. 定期的にキーをローテーション
+- 3〜6ヶ月ごとに新しいキーに更新
+- 古いキーは無効化
+
+---
+
 # AI APIで実現する未来
 
 ## 🤖 **OpenAI / Claude API**
@@ -700,11 +1091,16 @@ graph TB
 ```
 
 ### 実装例
+
 ```javascript
 // データベース操作が超簡単
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(url, key)
+// Supabaseクライアントを作成
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+)
 
 // データ取得
 const { data } = await supabase
